@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --primary-pink: #ff7eb3;
+  --bg-pink: #ff9cbd;
+  --dark-pink: #d1497b;
+  --button-hover: #ff528f;
+  --text-dark: #4a0d22;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-pink);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Pixel Font for Headings */
+h1, h2, h3, .pixel-text {
+  font-family: 'VT323', monospace;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow: 2px 2px 0px var(--dark-pink);
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 4.5rem;
+  }
+}
+
+/* Floating Hearts Background Animation */
+.floating-hearts-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff7eb3"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  background-size: cover;
+  opacity: 0.6;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Base App Container */
+.app-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Buttons */
+.btn {
+  background-color: var(--white);
+  color: var(--dark-pink);
+  border: 4px solid var(--dark-pink);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 var(--dark-pink);
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--dark-pink);
+}
+
+.btn-primary {
+  background-color: var(--primary-pink);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: var(--button-hover);
+}
+
+/* Form Elements */
+.input-field {
+  width: 100%;
+  padding: 1rem;
+  border: 3px solid var(--dark-pink);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(209, 73, 123, 0.3);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.option-card {
+  background: var(--white);
+  border: 3px solid var(--dark-pink);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.option-card:hover {
+  background: #ffe3ed;
+}
+
+.option-card.selected {
+  background: var(--primary-pink);
+  color: var(--white);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(209, 73, 123, 0.4);
+}
+
+/* Image Container */
+.gif-container {
+  width: 250px;
+  height: 250px;
+  border: 6px solid var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(209, 73, 123, 0.3);
+}
+
+.gif-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(209, 73, 123, 0.2);
+}
