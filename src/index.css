@@ -18,9 +18,9 @@
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-pink);
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.12) 0%, transparent 50%);
   color: var(--text-dark);
   min-height: 100vh;
   overflow-x: hidden;
@@ -31,80 +31,120 @@ body {
   position: relative;
 }
 
-/* Pixel Font for Headings */
+/* ========== Pixel Font ========== */
 h1, h2, h3, .pixel-text {
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   color: var(--white);
-  text-shadow: 2px 2px 0px var(--dark-pink);
+  text-shadow: 2px 2px 0px var(--dark-pink), 3px 3px 0px rgba(0,0,0,0.1);
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: 2px;
 }
 
-h1 {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-}
+h1 { font-size: 2.6rem; margin-bottom: 1rem; }
+h2 { font-size: 2rem; }
 
 @media (min-width: 768px) {
-  h1 {
-    font-size: 4.5rem;
-  }
+  h1 { font-size: 4.2rem; }
+  h2 { font-size: 2.5rem; }
 }
 
-/* Floating Hearts Background Animation */
+/* ========== Floating Hearts ========== */
 .floating-hearts-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
 }
 
-.heart {
+.pixel-heart {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff7eb3"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-  background-size: cover;
-  opacity: 0.6;
-  animation: float 6s linear infinite;
+  opacity: 0;
+  animation: floatUp linear infinite;
+  image-rendering: pixelated;
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(100vh) scale(0.5);
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.6;
-  }
-  80% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(-100px) scale(1.5);
-    opacity: 0;
-  }
+@keyframes floatUp {
+  0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.75; }
+  50%  { opacity: 0.9; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-150px) rotate(20deg); opacity: 0; }
 }
 
-/* Base App Container */
+/* ========== Sparkle Stars ========== */
+.sparkle {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkle 2s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0%   { opacity: 0.2; transform: scale(0.8); }
+  100% { opacity: 1;   transform: scale(1.3); }
+}
+
+/* ========== Pixelated Mountain Landscape ========== */
+.landscape {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100vw;
+  height: 200px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .landscape { height: 260px; }
+}
+
+/* ========== Confetti ========== */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
+
+/* ========== App Container ========== */
 .app-container {
   width: 100%;
-  max-width: 600px;
-  padding: 2rem;
+  max-width: 560px;
+  padding: 2rem 1.5rem 14rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1;
+  min-height: 100vh;
 }
 
-/* Buttons */
+@media (min-width: 768px) {
+  .app-container { padding-bottom: 16rem; }
+}
+
+/* ========== Buttons ========== */
 .btn {
   background-color: var(--white);
   color: var(--dark-pink);
@@ -130,15 +170,17 @@ h1 {
 }
 
 .btn-primary {
-  background-color: var(--primary-pink);
+  background: linear-gradient(135deg, #ff7eb3 0%, #ff528f 100%);
   color: var(--white);
+  border-color: #c93a6b;
+  box-shadow: 0 4px 0 #c93a6b;
 }
 
 .btn-primary:hover {
-  background-color: var(--button-hover);
+  background: linear-gradient(135deg, #ff528f 0%, #e0396e 100%);
 }
 
-/* Form Elements */
+/* ========== Form Elements ========== */
 .input-field {
   width: 100%;
   padding: 1rem;
@@ -147,8 +189,9 @@ h1 {
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
   margin-bottom: 1.5rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--text-dark);
+  text-align: center;
 }
 
 .input-field:focus {
@@ -156,61 +199,160 @@ h1 {
   box-shadow: 0 0 0 4px rgba(209, 73, 123, 0.3);
 }
 
+textarea.input-field {
+  resize: vertical;
+  min-height: 80px;
+}
+
 .options-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
   width: 100%;
 }
 
+@media (min-width: 500px) {
+  .options-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+}
+
 .option-card {
   background: var(--white);
   border: 3px solid var(--dark-pink);
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: 16px;
+  padding: 1rem 0.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 600;
+  font-size: 0.95rem;
+  user-select: none;
 }
+
+.option-card .emoji { font-size: 2rem; display: block; margin-bottom: 0.4rem; }
 
 .option-card:hover {
   background: #ffe3ed;
+  transform: translateY(-2px);
 }
 
 .option-card.selected {
-  background: var(--primary-pink);
+  background: linear-gradient(135deg, #ff7eb3, #ff528f);
   color: var(--white);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(209, 73, 123, 0.4);
+  box-shadow: 0 6px 20px rgba(209, 73, 123, 0.4);
+  border-color: #c93a6b;
 }
 
-/* Image Container */
+/* ========== GIF Container ========== */
 .gif-container {
-  width: 250px;
-  height: 250px;
-  border: 6px solid var(--white);
-  border-radius: 20px;
+  width: 200px; height: 200px;
+  border: 5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
   overflow: hidden;
-  margin-bottom: 2rem;
-  background: var(--white);
-  box-shadow: 0 8px 24px rgba(209, 73, 123, 0.3);
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(209, 73, 123, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gif-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; height: 100%;
+  object-fit: contain;
 }
 
+.gif-placeholder {
+  font-size: 4rem;
+  animation: wiggle 1.5s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50%      { transform: rotate(5deg); }
+}
+
+@media (min-width: 768px) {
+  .gif-container { width: 240px; height: 240px; }
+}
+
+/* ========== Glass Panel ========== */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 24px;
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   width: 100%;
   box-shadow: 0 8px 32px rgba(209, 73, 123, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+/* ========== Step Content ========== */
+.step-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.no-subtitle {
+  font-family: 'VT323', monospace;
+  color: var(--white);
+  font-size: 1.4rem;
+  text-shadow: 1px 1px 0px var(--dark-pink);
+  margin-top: 1rem;
+  min-height: 1.6rem;
+  text-align: center;
+}
+
+/* ========== Hindi Subtitle ========== */
+.hindi-subtitle {
+  font-family: 'VT323', monospace;
+  color: var(--white);
+  font-size: 1.4rem;
+  text-shadow: 1px 1px 0 var(--dark-pink);
+  margin-bottom: 0.5rem;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.hindi-subtitle .red { color: #ff1744; text-shadow: 1px 1px 0 #9e0028; }
+
+@media (min-width: 768px) {
+  .hindi-subtitle { font-size: 1.7rem; }
+}
+
+/* ========== Summary Card ========== */
+.summary-card {
+  background: rgba(255,255,255,0.8);
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: left;
+  color: #4a0d22;
+  margin-bottom: 2rem;
+  width: 100%;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  backdrop-filter: blur(5px);
+}
+
+.summary-card p {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.summary-card strong { min-width: 100px; }
