@@ -1,31 +1,10 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// =====================================================================
-// 🎯 GIF PLACEHOLDERS — Replace these URLs with your own GIF links!
-// Find sticker GIFs at https://giphy.com/stickers
-// Right-click → Copy Image Address → Paste below
-// =====================================================================
-const GIFS = {
-  cat: "",         // Proposal page — cute cat asking
-  pandaKiss: "",   // YAY page — panda/bear couple kissing
-  excited: "",     // Date & Dress page
-  thinking: "",    // Activity page
-  travel: "",      // Place & Vehicle page
-  checklist: "",   // To-do page
-  celebration: "", // Final summary page
-};
-
-// Fallback emojis when GIF URL is empty
-const FALLBACK_EMOJIS: Record<string, string> = {
-  cat: "🐱",
-  pandaKiss: "🐼💕",
-  excited: "🥰",
-  thinking: "🤔💭",
-  travel: "✈️",
-  checklist: "📝",
-  celebration: "🎉💖",
-};
+import {
+  PROPOSAL_GIFS, YAY_GIF, DATE_DRESS_GIF,
+  ACTIVITY_GIF, PLACE_VEHICLE_GIF, TODO_GIF,
+  CELEBRATION_GIF, FALLBACK_EMOJIS,
+} from './gifs';
 
 // ---- "No" button phrases ----
 const NO_PHRASES = [
@@ -245,18 +224,17 @@ function Confetti() {
 }
 
 // --- GIF or Fallback ---
-function GifImage({ gifKey }: { gifKey: keyof typeof GIFS }) {
-  const url = GIFS[gifKey];
+function GifImage({ url, fallbackKey }: { url: string; fallbackKey: string }) {
   if (url) {
     return (
       <div className="gif-container">
-        <img src={url} alt={gifKey} />
+        <img src={url} alt={fallbackKey} />
       </div>
     );
   }
   return (
     <div className="gif-container">
-      <span className="gif-placeholder">{FALLBACK_EMOJIS[gifKey]}</span>
+      <span className="gif-placeholder">{FALLBACK_EMOJIS[fallbackKey] || '💕'}</span>
     </div>
   );
 }
@@ -312,12 +290,18 @@ function ProposalStep({ onYes }: { onYes: () => void }) {
   const handleNo = () => setNoClicks((p) => p + 1);
   const noPhrase = NO_PHRASES[Math.min(noClicks, NO_PHRASES.length - 1)];
 
+  // Cycle through proposal GIFs every 2 No clicks
+  const gifIndex = PROPOSAL_GIFS.length > 0
+    ? Math.min(Math.floor(noClicks / 2), PROPOSAL_GIFS.length - 1)
+    : 0;
+  const currentGif = PROPOSAL_GIFS[gifIndex] || '';
+
   return (
     <motion.div className="step-content"
       initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -30 }}
       transition={{ duration: 0.4 }}>
 
-      <GifImage gifKey="cat" />
+      <GifImage url={currentGif} fallbackKey="proposal" />
 
       <p className="hindi-subtitle">
         Mere dil par kabza karne wali Aatankw<span className="red">ADI</span> 💘
@@ -360,7 +344,7 @@ function SuccessStep({ onContinue }: { onContinue: () => void }) {
     <motion.div className="step-content"
       initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, y: -30 }}
       transition={{ duration: 0.5 }}>
-      <GifImage gifKey="pandaKiss" />
+      <GifImage url={YAY_GIF} fallbackKey="yay" />
       <h1>YAY! 🎉💖</h1>
       <p className="pixel-text" style={{ fontSize: '1.6rem', marginBottom: '2rem' }}>I'm so glad u said yes. 🥰</p>
       <motion.button className="btn" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onContinue}>
@@ -380,7 +364,7 @@ function DateDressStep({ data, update, onNext }: { data: any; update: (f: string
     <motion.div className="glass-panel"
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
-      <GifImage gifKey="excited" />
+      <GifImage url={DATE_DRESS_GIF} fallbackKey="dateDress" />
       <h2 style={{ marginBottom: '1rem' }}>📅 Pick a Date</h2>
       <input type="date" className="input-field" value={data.date} onChange={(e) => update('date', e.target.value)} />
       <h2 style={{ margin: '1rem 0' }}>👗 Pick a Dress</h2>
@@ -414,7 +398,7 @@ function ActivityStep({ data, update, onNext }: { data: any; update: (f: string,
     <motion.div className="glass-panel"
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
-      <GifImage gifKey="thinking" />
+      <GifImage url={ACTIVITY_GIF} fallbackKey="activity" />
       <h2 style={{ marginBottom: '1.5rem' }}>💭 What would you like to do?</h2>
       <div className="options-grid three-col">
         {activities.map((a) => (
@@ -443,7 +427,7 @@ function PlaceVehicleStep({ data, update, onNext }: { data: any; update: (f: str
     <motion.div className="glass-panel"
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
-      <GifImage gifKey="travel" />
+      <GifImage url={PLACE_VEHICLE_GIF} fallbackKey="placeVehicle" />
       <h2 style={{ marginBottom: '1rem' }}>📍 Select a Place</h2>
       <input type="text" className="input-field" placeholder="Where should we go? 💫" value={data.place} onChange={(e) => update('place', e.target.value)} />
       <h2 style={{ margin: '1rem 0' }}>🚗 Mode of Travel</h2>
@@ -469,7 +453,7 @@ function TodoStep({ data, update, onNext }: { data: any; update: (f: string, v: 
     <motion.div className="glass-panel"
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
-      <GifImage gifKey="checklist" />
+      <GifImage url={TODO_GIF} fallbackKey="todo" />
       <h2 style={{ marginBottom: '1rem' }}>✨ Things to Do</h2>
       <textarea className="input-field" rows={3} placeholder="What should we do together? 💕" value={data.toDo} onChange={(e) => update('toDo', e.target.value)} />
       <h2 style={{ margin: '1rem 0' }}>🚫 Things NOT to Do</h2>
@@ -508,7 +492,7 @@ Can't wait! ❤️
     <motion.div className="glass-panel"
       initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}>
-      <GifImage gifKey="celebration" />
+      <GifImage url={CELEBRATION_GIF} fallbackKey="celebration" />
       <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>It's a Date! ❤️</h1>
       <p className="pixel-text" style={{ fontSize: '1.3rem', marginBottom: '1.5rem' }}>Here's the plan, cutie 🥰</p>
 
