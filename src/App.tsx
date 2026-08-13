@@ -245,10 +245,11 @@ export default function App() {
   const [showConfetti, setShowConfetti] = useState(false);
 
   const [formData, setFormData] = useState({
-    date: '', dress: '', activity: '', place: '', vehicle: '', toDo: '', notToDo: '',
+    date: '', dress: '', dressColor: '', activity: '', place: '', vehicle: '',
+    canDo: [] as string[], canDoOther: '',
   });
 
-  const updateForm = useCallback((field: string, value: string) => {
+  const updateForm = useCallback((field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
@@ -355,7 +356,7 @@ function SuccessStep({ onContinue }: { onContinue: () => void }) {
 }
 
 // ===================== STEP 3: DATE + DRESS =====================
-function DateDressStep({ data, update, onNext }: { data: any; update: (f: string, v: string) => void; onNext: () => void }) {
+function DateDressStep({ data, update, onNext }: { data: any; update: (f: string, v: any) => void; onNext: () => void }) {
   const dresses = [
     { label: 'Western', emoji: '👗' },
     { label: 'Traditional', emoji: '🥻' },
@@ -375,6 +376,8 @@ function DateDressStep({ data, update, onNext }: { data: any; update: (f: string
           </div>
         ))}
       </div>
+      <h2 style={{ margin: '1rem 0' }}>🎨 Dress Color Code / Twinning</h2>
+      <input type="text" className="input-field" placeholder="e.g. Black & White, Red twinning 💕" value={data.dressColor} onChange={(e) => update('dressColor', e.target.value)} />
       <motion.button className="btn btn-primary" onClick={onNext} disabled={!data.date || !data.dress}
         style={{ opacity: !data.date || !data.dress ? 0.5 : 1, marginTop: '1rem' }}
         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -428,7 +431,7 @@ function PlaceVehicleStep({ data, update, onNext }: { data: any; update: (f: str
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
       <GifImage url={PLACE_VEHICLE_GIF} fallbackKey="placeVehicle" />
-      <h2 style={{ marginBottom: '1rem' }}>📍 Select a Place</h2>
+      <h2 style={{ marginBottom: '1rem' }}>📍 Date Location</h2>
       <input type="text" className="input-field" placeholder="Where should we go? 💫" value={data.place} onChange={(e) => update('place', e.target.value)} />
       <h2 style={{ margin: '1rem 0' }}>🚗 Mode of Travel</h2>
       <div className="options-grid three-col">
@@ -447,17 +450,50 @@ function PlaceVehicleStep({ data, update, onNext }: { data: any; update: (f: str
   );
 }
 
-// ===================== STEP 6: TO-DO =====================
-function TodoStep({ data, update, onNext }: { data: any; update: (f: string, v: string) => void; onNext: () => void }) {
+// ===================== STEP 6: WHAT CAN WE DO =====================
+const CAN_DO_OPTIONS = [
+  { label: 'Hugs', emoji: '🤗' },
+  { label: 'Sitting on lap', emoji: '🪑' },
+  { label: 'Keeping head on lap', emoji: '😌' },
+  { label: 'Talking', emoji: '💬' },
+  { label: 'Sitting silently', emoji: '🤫' },
+  { label: 'Dancing', emoji: '💃' },
+  { label: 'Re-creating reel videos', emoji: '🎥' },
+  { label: 'Kisses', emoji: '💋' },
+  { label: 'Neck kisses', emoji: '😘' },
+];
+
+function TodoStep({ data, update, onNext }: { data: any; update: (f: string, v: any) => void; onNext: () => void }) {
+  const toggleCanDo = (label: string) => {
+    const current: string[] = data.canDo || [];
+    if (current.includes(label)) {
+      update('canDo', current.filter((l: string) => l !== label));
+    } else {
+      update('canDo', [...current, label]);
+    }
+  };
+
   return (
     <motion.div className="glass-panel"
       initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
       transition={{ duration: 0.4 }}>
       <GifImage url={TODO_GIF} fallbackKey="todo" />
-      <h2 style={{ marginBottom: '1rem' }}>✨ Things to Do</h2>
-      <textarea className="input-field" rows={3} placeholder="What should we do together? 💕" value={data.toDo} onChange={(e) => update('toDo', e.target.value)} />
-      <h2 style={{ margin: '1rem 0' }}>🚫 Things NOT to Do</h2>
-      <textarea className="input-field" rows={3} placeholder="Any dealbreakers this time? 😅" value={data.notToDo} onChange={(e) => update('notToDo', e.target.value)} />
+      <h2 style={{ marginBottom: '1.5rem' }}>💕 What can we do?</h2>
+      <div className="options-grid two-col">
+        {CAN_DO_OPTIONS.map((opt) => (
+          <div
+            key={opt.label}
+            className={`option-card multi-select ${(data.canDo || []).includes(opt.label) ? 'selected' : ''}`}
+            onClick={() => toggleCanDo(opt.label)}
+          >
+            <span className="emoji">{opt.emoji}</span>
+            <span className="option-label">{opt.label}</span>
+            {(data.canDo || []).includes(opt.label) && <span className="check-mark">✓</span>}
+          </div>
+        ))}
+      </div>
+      <h2 style={{ margin: '1rem 0' }}>✨ Anything else?</h2>
+      <textarea className="input-field" rows={2} placeholder="Tell me what else you'd like... 💭" value={data.canDoOther || ''} onChange={(e) => update('canDoOther', e.target.value)} />
       <motion.button className="btn btn-primary" onClick={onNext} style={{ marginTop: '1rem' }}
         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         See Final Date 💌
@@ -468,20 +504,20 @@ function TodoStep({ data, update, onNext }: { data: any; update: (f: string, v: 
 
 // ===================== STEP 7: FINAL SUMMARY =====================
 function FinalSummaryStep({ data }: { data: any }) {
+  const canDoList = (data.canDo || []).join(', ');
+  const allCanDo = [canDoList, data.canDoOther].filter(Boolean).join(', ');
+
   const text = `
 Our Date is Locked In! 💕
 
 📅 When: ${data.date}
-👗 Dress: ${data.dress}
+👗 Dress: ${data.dress}${data.dressColor ? ` (${data.dressColor})` : ''}
 🎉 Activity: ${data.activity}
 📍 Place: ${data.place}
 🚗 Transport: ${data.vehicle}
 
-✨ Things to do:
-${data.toDo || 'None specified'}
-
-🚫 Things NOT to do:
-${data.notToDo || 'None specified'}
+💕 What we can do:
+${allCanDo || 'None specified'}
 
 Can't wait! ❤️
   `.trim();
@@ -498,12 +534,11 @@ Can't wait! ❤️
 
       <div className="summary-card">
         <p>📅 <strong>Date:</strong> {data.date}</p>
-        <p>👗 <strong>Dress:</strong> {data.dress}</p>
+        <p>👗 <strong>Dress:</strong> {data.dress}{data.dressColor && ` — ${data.dressColor}`}</p>
         <p>🎉 <strong>Activity:</strong> {data.activity}</p>
-        <p>📍 <strong>Place:</strong> {data.place}</p>
+        <p>📍 <strong>Location:</strong> {data.place}</p>
         <p>🚗 <strong>Transport:</strong> {data.vehicle}</p>
-        {data.toDo && <p>✨ <strong>To do:</strong> {data.toDo}</p>}
-        {data.notToDo && <p>🚫 <strong>Not to do:</strong> {data.notToDo}</p>}
+        {allCanDo && <p>💕 <strong>We can do:</strong> {allCanDo}</p>}
       </div>
 
       <a href={waLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%' }}>

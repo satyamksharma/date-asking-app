@@ -245,6 +245,38 @@ textarea.input-field {
   border-color: #c93a6b;
 }
 
+/* ========== Multi-select Cards ========== */
+.options-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.option-card.multi-select {
+  position: relative;
+  padding: 0.8rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.option-card.multi-select .option-label {
+  display: block;
+  line-height: 1.2;
+}
+
+.option-card.multi-select .check-mark {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--white);
+  background: rgba(0,0,0,0.15);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ========== GIF Container ========== */
 .gif-container {
   width: 200px; height: 200px;
